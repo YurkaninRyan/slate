@@ -98,8 +98,13 @@ function normalizeNodeAndOffset(node, offset) {
       node = getEditableChild(node, i, direction)
     }
 
+    // We put zero width spaces in text nodes that aren't the only text node
+    // in a block.  So we need to account for that
+    const isntZeroWidthSpace = node.textContent !== '\u200A' && node.textContent !== '\u200B'
+
+
     // Determine the new offset inside the text node.
-    offset = isLast ? node.textContent.length : 0
+    offset = isLast && isntZeroWidthSpace ? node.textContent.length : 0
   }
 
   // Return the node and offset.
